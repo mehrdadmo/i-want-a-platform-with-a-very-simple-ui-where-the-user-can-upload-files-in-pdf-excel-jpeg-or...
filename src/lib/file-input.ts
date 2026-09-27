@@ -23,7 +23,7 @@ async function excelToText(file: File): Promise<string> {
   const workbook = XLSX.read(buffer, { type: "array" });
   return workbook.SheetNames.map((name) => {
     const sheet = workbook.Sheets[name];
-    return `--- Sheet: ${name} ---\n${XLSX.utils.sheet_to_csv(sheet)}`;
+    return `--- Sheet: ${name} ---\n${sheet ? XLSX.utils.sheet_to_csv(sheet) : ""}`;
   }).join("\n\n");
 }
 

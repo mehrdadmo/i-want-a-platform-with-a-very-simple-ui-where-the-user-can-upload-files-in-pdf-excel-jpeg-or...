@@ -96,5 +96,5 @@ export const runReconciliation = createServerFn({ method: "POST" })
 function stripCodeFence(text: string): string {
   const trimmed = text.trim();
   const match = trimmed.match(/^```(?:html)?\s*([\s\S]*?)\s*```$/i);
-  return match ? match[1] : trimmed;
+  return match?.[1] ?? trimmed;
 }
