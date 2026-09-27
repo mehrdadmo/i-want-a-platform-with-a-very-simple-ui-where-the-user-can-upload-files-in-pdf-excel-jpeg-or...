@@ -39,7 +39,7 @@ function toParts(label: string, file: ReconcileFilePart): ContentPart[] {
 }
 
 export const runReconciliation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => inputSchema.parse(data))
+  .validator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
     const apiKey = process.env["OPENAI_API_KEY"];
     if (!apiKey) {
