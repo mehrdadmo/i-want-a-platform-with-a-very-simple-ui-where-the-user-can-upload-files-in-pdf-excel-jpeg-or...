@@ -57,10 +57,18 @@ export function exportReportToExcel(html: string, fileName = "reconciliation-rep
   const doc = new DOMParser().parseFromString(html, "text/html");
   const tables = Array.from(doc.querySelectorAll("table"));
   const workbook = XLSX.utils.book_new();
+  const used = new Set<string>();
+  const uniqueName = (base: string) => {
+    let name = base || "Sheet";
+    let n = 2;
+    while (used.has(name.toLowerCase())) name = `${base.slice(0, 25)} ${n++}`;
+    used.add(name.toLowerCase());
+    return name;
+  };
 
   if (tables.length === 0) {
     const text = (doc.body.textContent ?? "").split("\n").map((line) => [line.trim()]);
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(text), "گزارش");
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(text), uniqueName("گزارش"));
   } else {
     tables.forEach((table, index) => {
       const rows = Array.from(table.querySelectorAll("tr")).map((tr) =>
@@ -73,7 +81,7 @@ export function exportReportToExcel(html: string, fileName = "reconciliation-rep
         table.previousElementSibling?.textContent?.trim() ||
         `جدول ${index + 1}`;
       const sheetName = caption.replace(/[\\/?*[\]:]/g, " ").slice(0, 28) || `Sheet${index + 1}`;
-      XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), sheetName);
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), uniqueName(sheetName));
     });
   }
 
